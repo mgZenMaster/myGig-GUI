@@ -3,9 +3,10 @@ var mgAutocomplete = (function() {
   return {
 
     get_text_id: function(optionslist_id, inputfield_id, id_field_id) {
-
       try {
-        const answer_id = document.querySelector("#" + optionslist_id + " option[value='" + document.getElementById(inputfield_id).value.trim() + "']").attributes["data-value"].value;
+        const answer_id = document.querySelector(
+            "#" + optionslist_id + " option[value='" + document.getElementById(inputfield_id).value.trim() + "']"
+          ).attributes["data-value"].value;
         document.getElementById(id_field_id).value = answer_id;
         return answer_id;
       } catch(ex) {
@@ -30,10 +31,11 @@ var mgAutocomplete = (function() {
                   }
                 const text = this.input_field.value.trim();
                 for (var key in answers) {
-                    existing_answer_text = answers[key].text.trim();
-                    $('<option value="' + existing_answer_text + '" data-value="' + answers[key].value + '"/>').html(existing_answer_text).appendTo(this.input_field.list);
-                    if (answers[key].text.trim() == text) {
-                      input_field.ajax_id_input.value = answers[key].value;
+                    const existing_answer_text = answers[key].trim();
+                    $('<option value="' + existing_answer_text + '" data-value="' + key + '"/>')
+                      .html(existing_answer_text).appendTo(this.input_field.list);
+                    if (existing_answer_text == text) {
+                      this.input_field.ajax_id_input.value = key;
                     }
                 }
 
@@ -45,6 +47,7 @@ var mgAutocomplete = (function() {
         };
       }
     },
+
     decorate: function(input) {
       const input_id = input.id;
       const optionslist = input.list;
@@ -81,9 +84,17 @@ var mgAutocomplete = (function() {
       input.onkeyup = function(event) {
           mgAutocomplete.update_optionslist(event.currentTarget);
         };
+    },
+
+    when_ready: function(callback) {
+      if (document.readyState === "complete"
+          || document.readyState === "interactive") {
+          setTimeout(callback, 1);
+      } else {
+          document.addEventListener("DOMContentLoaded", callback);
+      }
     }
 
   }
-
 
 })();
